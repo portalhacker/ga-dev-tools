@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import useGapiContext from "@/contexts/useGapiContext";
 import * as gapiUtils from "@/utils/gapi-utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 enum gapiUtilsFunctionName {
   listGA4AccountSummaries = "listGA4AccountSummaries",
@@ -33,6 +33,33 @@ export default function GapiCaller() {
   >(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [accountSummaries, setAccountSummaries] = useState<
+    gapi.client.analyticsadmin.GoogleAnalyticsAdminV1betaAccountSummary[] | null
+  >(null);
+
+  useEffect(() => {
+    const fetchAccountSummaries = async () => {
+      if (!isGapiReady) {
+        console.error("GAPI is not ready");
+        return;
+      }
+      const accountSummariesResponse = await gapiUtils.listGA4AccountSummaries({
+        accessToken: accessToken as gapi.client.TokenObject,
+      });
+      console.log("Account summaries response", accountSummariesResponse);
+      setAccountSummaries(accountSummariesResponse.accountSummaries || null);
+    };
+    fetchAccountSummaries();
+  }, [isGapiReady]);
+  const properties = accountSummaries
+    ?.flatMap((accountSummary) =>
+      accountSummary.propertySummaries?.map((propertySummary) => ({
+        ...propertySummary,
+        accountDisplayName: accountSummary.displayName || "Unknown Account",
+      })),
+    )
+    .filter((property) => property !== undefined);
+  console.log("Properties", properties);
 
   function updateSearchParams(newPropertyId: number) {
     const params = new URLSearchParams(searchParams.toString());
@@ -95,18 +122,12 @@ export default function GapiCaller() {
 
   return (
     <div className="flex flex-col gap-4">
-      <button
-        onClick={() => client?.requestAccessToken()}
-        className="rounded border px-4 py-2 hover:cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800"
-      >
-        Authorize with Google
-      </button>
       <select
         value={functionName}
         onChange={(e) =>
           setFunctionName(e.target.value as gapiUtilsFunctionName)
         }
-        className="rounded border px-4 py-2"
+        className="rounded border px-4 py-2 hover:cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800"
       >
         {Object.values(gapiUtilsFunctionName).map((func) => (
           <option key={func} value={func}>
@@ -114,13 +135,28 @@ export default function GapiCaller() {
           </option>
         ))}
       </select>
-      <input
-        type="number"
+      <select
         value={properyId}
         onChange={(e) => handlePropertyIdChange(Number(e.target.value))}
-        className="rounded border px-4 py-2"
-        placeholder="Property ID"
-      />
+        className="rounded border px-4 py-2 hover:cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800"
+      >
+        {properties?.length === 0 ? (
+          <option value={0} disabled>
+            No properties available
+          </option>
+        ) : (
+          <>
+            {properties?.map((property) => (
+              <option
+                key={property.property?.split("/")[1]}
+                value={property.property?.split("/")[1]}
+              >
+                {property.accountDisplayName} - {property.displayName}
+              </option>
+            ))}
+          </>
+        )}
+      </select>
       <button
         onClick={executeGapi}
         disabled={!accessToken || isLoading}

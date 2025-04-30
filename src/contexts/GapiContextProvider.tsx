@@ -46,6 +46,7 @@ export default function GapiContextProvider({ children }: GapiProviderProps) {
             "https://www.googleapis.com/auth/analytics.readonly https://www.googleapis.com/auth/marketingplatformadmin.analytics.read",
           callback: handleCredentialResponse,
         });
+        tokenClient.requestAccessToken();
         setClient(tokenClient);
       };
       googleScript.onerror = () => {
