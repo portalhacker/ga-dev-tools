@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter, useSearchParams } from "next/navigation";
+
 import useGapiContext from "@/contexts/useGapiContext";
 import * as gapiUtils from "@/utils/gapi-utils";
 import { useState } from "react";
@@ -12,11 +14,16 @@ enum gapiUtilsFunctionName {
 }
 
 export default function GapiCaller() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const properyIdParam = Number(searchParams.get("property_id")) || null;
   const { isGapiReady, client, accessToken } = useGapiContext();
   const [functionName, setFunctionName] = useState<gapiUtilsFunctionName>(
     gapiUtilsFunctionName.listGA4AccountSummaries,
   );
-  const [properyId, setProperyId] = useState<number>(456086743);
+  const [properyId, setProperyId] = useState<number>(
+    properyIdParam || 456086743,
+  );
   const [response, setResponse] = useState<
     | gapi.client.analyticsadmin.GoogleAnalyticsAdminV1betaListAccountSummariesResponse
     | gapi.client.analyticsadmin.GoogleAnalyticsAdminV1betaListAccountsResponse
@@ -26,6 +33,17 @@ export default function GapiCaller() {
   >(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  function updateSearchParams(newPropertyId: number) {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("property_id", newPropertyId.toString());
+    router.push(`?${params.toString()}`);
+  }
+
+  function handlePropertyIdChange(newPropertyId: number) {
+    setProperyId(newPropertyId);
+    updateSearchParams(newPropertyId);
+  }
 
   async function executeGapi(): Promise<void> {
     if (!isGapiReady || !client) {
@@ -99,7 +117,7 @@ export default function GapiCaller() {
       <input
         type="number"
         value={properyId}
-        onChange={(e) => setProperyId(Number(e.target.value))}
+        onChange={(e) => handlePropertyIdChange(Number(e.target.value))}
         className="rounded border px-4 py-2"
         placeholder="Property ID"
       />
