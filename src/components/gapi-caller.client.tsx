@@ -24,6 +24,8 @@ export default function GapiCaller() {
     | gapi.client.analyticsdata.RunReportResponse
     | null
   >(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function executeGapi(): Promise<void> {
     if (!isGapiReady || !client) {
@@ -55,14 +57,21 @@ export default function GapiCaller() {
     }
 
     try {
+      setIsLoading(true);
       const response = await functionToCall({
         accessToken,
         properyId,
       });
       console.log("Response", response);
       setResponse(response);
+      setIsLoading(false);
+      setError(null);
     } catch (err) {
       console.error("Error executing GAPI call", err);
+      setIsLoading(false);
+      setResponse(null);
+      setError("Error executing GAPI call: " + (err as Error).message);
+      throw new Error("Error executing GAPI call");
     }
   }
 
@@ -96,10 +105,10 @@ export default function GapiCaller() {
       />
       <button
         onClick={executeGapi}
-        disabled={!accessToken}
+        disabled={!accessToken || isLoading}
         className="rounded border px-4 py-2 hover:cursor-pointer hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-gray-800"
       >
-        Execute
+        {isLoading ? "Loading..." : "Execute"}
       </button>
       {isGapiReady ? (
         <p className="text-green-500">GAPI is ready</p>
@@ -116,7 +125,7 @@ export default function GapiCaller() {
           <code>{JSON.stringify(response, null, 2)}</code>
         </pre>
       ) : (
-        <p className="text-red-500">Metadata is not set</p>
+        <p className="text-red-500">Data not fetched</p>
       )}
     </div>
   );

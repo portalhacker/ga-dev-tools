@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { GapiContext } from "./GapiContext";
+import { GapiContext } from "./GapiContextProvider";
 
 export default function useGapiContext() {
   const context = useContext(GapiContext);

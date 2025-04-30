@@ -14,7 +14,7 @@ type GapiContext = {
 
 export const GapiContext = createContext<GapiContext | undefined>(undefined);
 
-export default function GapiProvider({ children }: GapiProviderProps) {
+export default function GapiContextProvider({ children }: GapiProviderProps) {
   const [isGapiReady, setIsGapiReady] = useState<boolean>(false);
 
   const [client, setClient] = useState<
