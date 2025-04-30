@@ -14,7 +14,7 @@ enum gapiUtilsFunctionName {
 export default function GapiCaller() {
   const { isGapiReady, client, accessToken } = useGapiContext();
   const [functionName, setFunctionName] = useState<gapiUtilsFunctionName>(
-    gapiUtilsFunctionName.listGA4ProperyMetadata,
+    gapiUtilsFunctionName.listGA4AccountSummaries,
   );
   const [properyId, setProperyId] = useState<number>(456086743);
   const [response, setResponse] = useState<
