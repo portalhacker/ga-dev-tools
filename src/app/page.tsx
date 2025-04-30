@@ -36,8 +36,7 @@ export default function Page() {
 
         window.client = window.google.accounts.oauth2.initTokenClient({
           client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '',
-          scope:
-            'https://www.googleapis.com/auth/analytics https://www.googleapis.com/auth/analytics.readonly',
+          scope: 'https://www.googleapis.com/auth/analytics.readonly',
           callback: handleCredentialResponse,
         });
       };
