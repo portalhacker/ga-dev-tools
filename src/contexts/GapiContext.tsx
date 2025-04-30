@@ -42,7 +42,8 @@ export default function GapiProvider({ children }: GapiProviderProps) {
         console.log("Google Sign-In script loaded");
         const tokenClient = window.google.accounts.oauth2.initTokenClient({
           client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "",
-          scope: "https://www.googleapis.com/auth/analytics.readonly",
+          scope:
+            "https://www.googleapis.com/auth/analytics.readonly https://www.googleapis.com/auth/marketingplatformadmin.analytics.read",
           callback: handleCredentialResponse,
         });
         setClient(tokenClient);

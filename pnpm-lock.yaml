@@ -27,6 +27,9 @@ importers:
       '@types/gapi':
         specifier: ^0.0.47
         version: 0.0.47
+      '@types/gapi.client.analyticsadmin-v1beta':
+        specifier: ^0.0.3
+        version: 0.0.3
       '@types/gapi.client.analyticsdata-v1beta':
         specifier: ^0.0.4
         version: 0.0.4
@@ -244,6 +247,9 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@maxim_mazurok/gapi.client.analyticsadmin-v1beta@0.0.20250425':
+    resolution: {integrity: sha512-5zD2sTzU44N/yh5KRrGcRxajVau6Zf/V1vNyNJIpD7+7raEL6B7QVQJF+sSuaZ78P6nfezf6R2u3kxSSL+tcNA==}
+
   '@maxim_mazurok/gapi.client.analyticsdata-v1beta@0.0.20250427':
     resolution: {integrity: sha512-nj8umOIbBzZGE+1jD3ndhUtOb3u2lOTXXXShM1SQd9rE8lcsYfFX9pUtzCY1+FED8s0YClBrfOzoHwYFUIMm4w==}
 
@@ -428,6 +434,9 @@ packages:
 
   '@types/estree@1.0.7':
     resolution: {integrity: sha512-w28IoSUCJpidD/TGviZwwMJckNESJZXFu7NBZ5YJ4mEUnNraUn9Pm8HSZm/jDF1pDWYKspWE7oVphigUPRakIQ==}
+
+  '@types/gapi.client.analyticsadmin-v1beta@0.0.3':
+    resolution: {integrity: sha512-d4HvYKXfbOwauabWZk7qAEo83J3U/C08IYq2v+LIP1D4SFceVCOENF08pXvcbkr44w0E/5CRPkFr8qjtR0BsPg==}
 
   '@types/gapi.client.analyticsdata-v1beta@0.0.4':
     resolution: {integrity: sha512-ubnmnPugsZXfd0oxMEyGPM6ywn58GJxJUxM1MhMdCMRVDRBI1QshHsT+TpWtYGNcoJQfJWeQuSuTsbpkhol6VA==}
@@ -1964,6 +1973,11 @@ snapshots:
   '@img/sharp-win32-x64@0.34.1':
     optional: true
 
+  '@maxim_mazurok/gapi.client.analyticsadmin-v1beta@0.0.20250425':
+    dependencies:
+      '@types/gapi.client': 1.0.8
+      '@types/gapi.client.discovery-v1': 0.0.4
+
   '@maxim_mazurok/gapi.client.analyticsdata-v1beta@0.0.20250427':
     dependencies:
       '@types/gapi.client': 1.0.8
@@ -2107,6 +2121,10 @@ snapshots:
     optional: true
 
   '@types/estree@1.0.7': {}
+
+  '@types/gapi.client.analyticsadmin-v1beta@0.0.3':
+    dependencies:
+      '@maxim_mazurok/gapi.client.analyticsadmin-v1beta': 0.0.20250425
 
   '@types/gapi.client.analyticsdata-v1beta@0.0.4':
     dependencies:

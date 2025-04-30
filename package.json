@@ -17,6 +17,7 @@
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/gapi": "^0.0.47",
+    "@types/gapi.client.analyticsadmin-v1beta": "^0.0.3",
     "@types/gapi.client.analyticsdata-v1beta": "^0.0.4",
     "@types/google.accounts": "^0.0.15",
     "@types/node": "^20",

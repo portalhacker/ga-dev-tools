@@ -1,28 +1,61 @@
 "use client";
 
 import useGapiContext from "@/contexts/useGapiContext";
-import { loadAnalyticsMetadata } from "@/utils/gapi-utils";
+import * as gapiUtils from "@/utils/gapi-utils";
 import { useState } from "react";
+
+enum gapiUtilsFunctionName {
+  listGA4AccountSummaries = "listGA4AccountSummaries",
+  listGA4Accounts = "listGA4Accounts",
+  listGA4ProperyMetadata = "listGA4ProperyMetadata",
+}
 
 export default function GapiCaller() {
   const { isGapiReady, client, accessToken } = useGapiContext();
-  const [gaMetadata, setGaMetadata] =
-    useState<gapi.client.analyticsdata.Metadata | null>(null);
+  const [functionName, setFunctionName] = useState<gapiUtilsFunctionName>(
+    gapiUtilsFunctionName.listGA4ProperyMetadata,
+  );
+  const [properyId, setProperyId] = useState<number>(456086743);
+  const [response, setResponse] = useState<
+    | gapi.client.analyticsadmin.GoogleAnalyticsAdminV1betaListAccountSummariesResponse
+    | gapi.client.analyticsadmin.GoogleAnalyticsAdminV1betaListAccountsResponse
+    | gapi.client.analyticsdata.Metadata
+    | null
+  >(null);
 
   async function executeGapi(): Promise<void> {
     if (!isGapiReady || !client) {
       console.error("GAPI client is not initialized");
       return;
     }
-
     if (!accessToken) {
       console.error("Access token is not set");
       return;
     }
 
+    let functionToCall;
+    switch (functionName) {
+      case gapiUtilsFunctionName.listGA4AccountSummaries:
+        functionToCall = gapiUtils.listGA4AccountSummaries;
+        break;
+      case gapiUtilsFunctionName.listGA4Accounts:
+        functionToCall = gapiUtils.listGA4Accounts;
+        break;
+      case gapiUtilsFunctionName.listGA4ProperyMetadata:
+        functionToCall = gapiUtils.listGA4ProperyMetadata;
+        break;
+      default:
+        console.error("Invalid function name");
+        return;
+    }
+
     try {
-      const metadata = await loadAnalyticsMetadata(accessToken);
-      setGaMetadata(metadata);
+      const response = await functionToCall({
+        accessToken,
+        properyId,
+      });
+      console.log("Response", response);
+      setResponse(response);
     } catch (err) {
       console.error("Error executing GAPI call", err);
     }
@@ -36,6 +69,26 @@ export default function GapiCaller() {
       >
         Authorize with Google
       </button>
+      <select
+        value={functionName}
+        onChange={(e) =>
+          setFunctionName(e.target.value as gapiUtilsFunctionName)
+        }
+        className="rounded border px-4 py-2"
+      >
+        {Object.values(gapiUtilsFunctionName).map((func) => (
+          <option key={func} value={func}>
+            {func}
+          </option>
+        ))}
+      </select>
+      <input
+        type="number"
+        value={properyId}
+        onChange={(e) => setProperyId(Number(e.target.value))}
+        className="rounded border px-4 py-2"
+        placeholder="Property ID"
+      />
       <button
         onClick={executeGapi}
         disabled={!accessToken}
@@ -53,12 +106,10 @@ export default function GapiCaller() {
       ) : (
         <p className="text-red-500">Access token is not set</p>
       )}
-      {gaMetadata && gaMetadata.name ? (
-        <p className="text-green-500">
-          {gaMetadata.name} - {gaMetadata.dimensions?.length} dimensions,{" "}
-          {gaMetadata.metrics?.length} metrics, {gaMetadata.comparisons?.length}{" "}
-          comparisons
-        </p>
+      {response ? (
+        <pre className="text-green-500">
+          <code>{JSON.stringify(response, null, 2)}</code>
+        </pre>
       ) : (
         <p className="text-red-500">Metadata is not set</p>
       )}
