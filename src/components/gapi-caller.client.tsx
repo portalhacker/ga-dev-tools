@@ -70,7 +70,7 @@ export default function GapiCaller() {
     <div className="flex flex-col gap-4">
       <button
         onClick={() => client?.requestAccessToken()}
-        className="rounded border px-4 py-2 hover:cursor-pointer hover:bg-gray-200"
+        className="rounded border px-4 py-2 hover:cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800"
       >
         Authorize with Google
       </button>
@@ -97,7 +97,7 @@ export default function GapiCaller() {
       <button
         onClick={executeGapi}
         disabled={!accessToken}
-        className="rounded border px-4 py-2 hover:cursor-pointer hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
+        className="rounded border px-4 py-2 hover:cursor-pointer hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-gray-800"
       >
         Execute
       </button>
