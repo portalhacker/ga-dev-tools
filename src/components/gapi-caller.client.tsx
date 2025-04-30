@@ -1,14 +1,15 @@
 "use client";
 
-import { useState } from "react";
 import useGapiContext from "@/contexts/useGapiContext";
+import { loadAnalyticsMetadata } from "@/utils/gapi-utils";
+import { useState } from "react";
 
-export default function GapiDataFetcher() {
+export default function GapiCaller() {
   const { isGapiReady, client, accessToken } = useGapiContext();
   const [gaMetadata, setGaMetadata] =
     useState<gapi.client.analyticsdata.Metadata | null>(null);
 
-  function executeGapi(): void {
+  async function executeGapi(): Promise<void> {
     if (!isGapiReady || !client) {
       console.error("GAPI client is not initialized");
       return;
@@ -19,34 +20,12 @@ export default function GapiDataFetcher() {
       return;
     }
 
-    window.gapi.client.setToken(accessToken);
-    window.gapi.client
-      .load(
-        "https://analyticsdata.googleapis.com/$discovery/rest?version=v1beta",
-      )
-      .then(
-        () => {
-          console.log("GAPI client loaded for API");
-          window.gapi.client.analyticsdata.properties
-            .getMetadata({
-              name: "properties/456086743/metadata",
-            })
-            .then(
-              (
-                response: gapi.client.Response<gapi.client.analyticsdata.Metadata>,
-              ) => {
-                console.log("Response", response);
-                setGaMetadata(response.result);
-              },
-            )
-            .catch((err: Error) => {
-              console.error("Execute error", err);
-            });
-        },
-        (err: Error) => {
-          console.error("Error loading GAPI client for API", err);
-        },
-      );
+    try {
+      const metadata = await loadAnalyticsMetadata(accessToken);
+      setGaMetadata(metadata);
+    } catch (err) {
+      console.error("Error executing GAPI call", err);
+    }
   }
 
   return (

@@ -31,6 +31,7 @@ export default function GapiProvider({ children }: GapiProviderProps) {
         response: google.accounts.oauth2.TokenResponse,
       ): void {
         setAccessToken(response);
+        console.log("Access token received and saved:", response);
       }
 
       // Load the Google Sign-In script (https://developers.google.com/identity/oauth2/web/guides/use-token-model)
