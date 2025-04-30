@@ -24,11 +24,20 @@ importers:
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.1.4
+      '@types/gapi':
+        specifier: ^0.0.47
+        version: 0.0.47
+      '@types/gapi.client.analyticsdata-v1beta':
+        specifier: ^0.0.4
+        version: 0.0.4
+      '@types/google.accounts':
+        specifier: ^0.0.15
+        version: 0.0.15
       '@types/node':
         specifier: ^20
         version: 20.17.32
       '@types/react':
-        specifier: ^19
+        specifier: ^19.1.2
         version: 19.1.2
       '@types/react-dom':
         specifier: ^19
@@ -229,6 +238,12 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@maxim_mazurok/gapi.client.analyticsdata-v1beta@0.0.20250427':
+    resolution: {integrity: sha512-nj8umOIbBzZGE+1jD3ndhUtOb3u2lOTXXXShM1SQd9rE8lcsYfFX9pUtzCY1+FED8s0YClBrfOzoHwYFUIMm4w==}
+
+  '@maxim_mazurok/gapi.client.discovery-v1@0.1.20200806':
+    resolution: {integrity: sha512-Wl6UfmZVDdWbY3PUu8E2ULk9RPLjnMqp/iOA4tcK8Ne+U/GmlnWP/e34IaZNGArfl7iXJNOG+/3Rj9L9jQyF9Q==}
+
   '@napi-rs/wasm-runtime@0.2.9':
     resolution: {integrity: sha512-OKRBiajrrxB9ATokgEQoG87Z25c67pCpYcCwmXYX8PBftC9pBfN18gnm/fh1wurSLEKIAt+QRFLFCQISrb66Jg==}
 
@@ -407,6 +422,21 @@ packages:
 
   '@types/estree@1.0.7':
     resolution: {integrity: sha512-w28IoSUCJpidD/TGviZwwMJckNESJZXFu7NBZ5YJ4mEUnNraUn9Pm8HSZm/jDF1pDWYKspWE7oVphigUPRakIQ==}
+
+  '@types/gapi.client.analyticsdata-v1beta@0.0.4':
+    resolution: {integrity: sha512-ubnmnPugsZXfd0oxMEyGPM6ywn58GJxJUxM1MhMdCMRVDRBI1QshHsT+TpWtYGNcoJQfJWeQuSuTsbpkhol6VA==}
+
+  '@types/gapi.client.discovery-v1@0.0.4':
+    resolution: {integrity: sha512-uevhRumNE65F5mf2gABLaReOmbFSXONuzFZjNR3dYv6BmkHg+wciubHrfBAsp3554zNo3Dcg6dUAlwMqQfpwjQ==}
+
+  '@types/gapi.client@1.0.8':
+    resolution: {integrity: sha512-qJQUmmumbYym3Amax0S8CVzuSngcXsC1fJdwRS2zeW5lM63zXkw4wJFP+bG0jzgi0R6EsJKoHnGNVTDbOyG1ng==}
+
+  '@types/gapi@0.0.47':
+    resolution: {integrity: sha512-/ZsLuq6BffMgbKMtZyDZ8vwQvTyKhKQ1G2K6VyWCgtHHhfSSXbk4+4JwImZiTjWNXfI2q1ZStAwFFHSkNoTkHA==}
+
+  '@types/google.accounts@0.0.15':
+    resolution: {integrity: sha512-NiydIuJzwdpnWNqTPOeDzGXhzz46Ll6T4rN3YWSm9Zfx/8ZfbwFbzyPSw1Tkz4uE3gQiU+fRj4KvBVUuHmk+KQ==}
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
@@ -1868,6 +1898,16 @@ snapshots:
   '@img/sharp-win32-x64@0.34.1':
     optional: true
 
+  '@maxim_mazurok/gapi.client.analyticsdata-v1beta@0.0.20250427':
+    dependencies:
+      '@types/gapi.client': 1.0.8
+      '@types/gapi.client.discovery-v1': 0.0.4
+
+  '@maxim_mazurok/gapi.client.discovery-v1@0.1.20200806':
+    dependencies:
+      '@types/gapi.client': 1.0.8
+      '@types/gapi.client.discovery-v1': 0.0.4
+
   '@napi-rs/wasm-runtime@0.2.9':
     dependencies:
       '@emnapi/core': 1.4.3
@@ -2001,6 +2041,20 @@ snapshots:
     optional: true
 
   '@types/estree@1.0.7': {}
+
+  '@types/gapi.client.analyticsdata-v1beta@0.0.4':
+    dependencies:
+      '@maxim_mazurok/gapi.client.analyticsdata-v1beta': 0.0.20250427
+
+  '@types/gapi.client.discovery-v1@0.0.4':
+    dependencies:
+      '@maxim_mazurok/gapi.client.discovery-v1': 0.1.20200806
+
+  '@types/gapi.client@1.0.8': {}
+
+  '@types/gapi@0.0.47': {}
+
+  '@types/google.accounts@0.0.15': {}
 
   '@types/json-schema@7.0.15': {}
 
