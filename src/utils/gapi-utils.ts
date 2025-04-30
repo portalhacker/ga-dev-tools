@@ -27,7 +27,6 @@ export async function listGA4AccountSummaries({
   const discoveryDocument =
     "https://analyticsadmin.googleapis.com/$discovery/rest?version=v1beta";
   await initAPI({ accessToken, discoveryDocument });
-
   const response =
     await window.gapi.client.analyticsadmin.accountSummaries.list();
   console.log("Response", response);
@@ -40,7 +39,6 @@ export async function listGA4Accounts({
   const discoveryDocument =
     "https://analyticsadmin.googleapis.com/$discovery/rest?version=v1beta";
   await initAPI({ accessToken, discoveryDocument });
-
   const response = await window.gapi.client.analyticsadmin.accounts.list();
   console.log("Response", response);
   return response.result;
@@ -53,11 +51,42 @@ export async function listGA4ProperyMetadata({
   const discoveryDocument =
     "https://analyticsdata.googleapis.com/$discovery/rest?version=v1beta";
   await initAPI({ accessToken, discoveryDocument });
-
   const response =
     await window.gapi.client.analyticsdata.properties.getMetadata({
       name: `properties/${properyId}/metadata`,
     });
+  console.log("Response", response);
+  return response.result;
+}
+
+export async function runGA4Report({
+  accessToken,
+  properyId,
+}: GA4ProperyProps): Promise<gapi.client.analyticsdata.RunReportResponse> {
+  const discoveryDocument =
+    "https://analyticsdata.googleapis.com/$discovery/rest?version=v1beta";
+  await initAPI({ accessToken, discoveryDocument });
+  const response = await window.gapi.client.analyticsdata.properties.runReport({
+    property: `properties/${properyId}`,
+    resource: {
+      dateRanges: [
+        {
+          startDate: "2025-01-01",
+          endDate: "2025-04-30",
+        },
+      ],
+      dimensions: [
+        {
+          name: "eventName",
+        },
+      ],
+      metrics: [
+        {
+          name: "eventCount",
+        },
+      ],
+    },
+  });
   console.log("Response", response);
   return response.result;
 }

@@ -8,6 +8,7 @@ enum gapiUtilsFunctionName {
   listGA4AccountSummaries = "listGA4AccountSummaries",
   listGA4Accounts = "listGA4Accounts",
   listGA4ProperyMetadata = "listGA4ProperyMetadata",
+  runGA4Report = "runGA4Report",
 }
 
 export default function GapiCaller() {
@@ -20,6 +21,7 @@ export default function GapiCaller() {
     | gapi.client.analyticsadmin.GoogleAnalyticsAdminV1betaListAccountSummariesResponse
     | gapi.client.analyticsadmin.GoogleAnalyticsAdminV1betaListAccountsResponse
     | gapi.client.analyticsdata.Metadata
+    | gapi.client.analyticsdata.RunReportResponse
     | null
   >(null);
 
@@ -43,6 +45,9 @@ export default function GapiCaller() {
         break;
       case gapiUtilsFunctionName.listGA4ProperyMetadata:
         functionToCall = gapiUtils.listGA4ProperyMetadata;
+        break;
+      case gapiUtilsFunctionName.runGA4Report:
+        functionToCall = gapiUtils.runGA4Report;
         break;
       default:
         console.error("Invalid function name");
