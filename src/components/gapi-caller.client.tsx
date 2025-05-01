@@ -50,7 +50,7 @@ export default function GapiCaller() {
       setAccountSummaries(accountSummariesResponse.accountSummaries || null);
     };
     fetchAccountSummaries();
-  }, [isGapiReady]);
+  }, [isGapiReady, accessToken]);
   const properties = accountSummaries
     ?.flatMap((accountSummary) =>
       accountSummary.propertySummaries?.map((propertySummary) => ({

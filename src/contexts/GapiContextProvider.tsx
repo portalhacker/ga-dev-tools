@@ -27,7 +27,7 @@ export default function GapiContextProvider({ children }: GapiProviderProps) {
 
   useEffect(() => {
     if (typeof window !== "undefined" && !window.google) {
-      function handleCredentialResponse(
+      function handleTokenResponse(
         response: google.accounts.oauth2.TokenResponse,
       ): void {
         setAccessToken(response);
@@ -40,11 +40,19 @@ export default function GapiContextProvider({ children }: GapiProviderProps) {
       googleScript.async = true;
       googleScript.onload = () => {
         console.log("Google Sign-In script loaded");
+
+        // google.accounts.id.initialize({
+        //   client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "",
+        //   callback: handleCredentialResponse,
+        //   auto_select: true,
+        // });
+        // google.accounts.id.prompt();
+
         const tokenClient = window.google.accounts.oauth2.initTokenClient({
           client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "",
           scope:
             "https://www.googleapis.com/auth/analytics.readonly https://www.googleapis.com/auth/marketingplatformadmin.analytics.read",
-          callback: handleCredentialResponse,
+          callback: handleTokenResponse,
         });
         tokenClient.requestAccessToken();
         setClient(tokenClient);
