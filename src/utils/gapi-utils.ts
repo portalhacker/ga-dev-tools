@@ -11,6 +11,12 @@ type GA4ProperyProps = tokenProps & {
   properyId: number;
 };
 
+type GA4ReportProps = GA4ProperyProps & {
+  dateRanges: gapi.client.analyticsdata.DateRange[];
+  dimensions: gapi.client.analyticsdata.Dimension[];
+  metrics: gapi.client.analyticsdata.Metric[];
+};
+
 async function initAPI({ accessToken, discoveryDocument }: initAPIProps) {
   if (!accessToken) {
     throw new Error("Access token is not set");
@@ -62,29 +68,26 @@ export async function listGA4ProperyMetadata({
 export async function runGA4Report({
   accessToken,
   properyId,
-}: GA4ProperyProps): Promise<gapi.client.analyticsdata.RunReportResponse> {
+  dateRanges,
+  dimensions,
+  metrics,
+}: GA4ReportProps): Promise<gapi.client.analyticsdata.RunReportResponse> {
   const discoveryDocument =
     "https://analyticsdata.googleapis.com/$discovery/rest?version=v1beta";
   await initAPI({ accessToken, discoveryDocument });
   const response = await window.gapi.client.analyticsdata.properties.runReport({
     property: `properties/${properyId}`,
     resource: {
-      dateRanges: [
-        {
-          startDate: "2025-01-01",
-          endDate: "2025-04-30",
-        },
-      ],
-      dimensions: [
-        {
-          name: "eventName",
-        },
-      ],
-      metrics: [
-        {
-          name: "eventCount",
-        },
-      ],
+      dateRanges: dateRanges.map((dateRange) => ({
+        startDate: dateRange.startDate,
+        endDate: dateRange.endDate,
+      })),
+      dimensions: dimensions.map((dimension) => ({
+        name: dimension.name,
+      })),
+      metrics: metrics.map((metric) => ({
+        name: metric.name,
+      })),
     },
   });
   console.log("Response", response);
