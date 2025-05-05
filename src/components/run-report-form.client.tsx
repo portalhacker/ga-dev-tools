@@ -1,5 +1,6 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import useGapiContext from "@/contexts/useGapiContext";
@@ -10,6 +11,7 @@ import {
 } from "@/utils/gapi-utils";
 
 export default function RunReportForm() {
+  const searchParams = useSearchParams();
   const { isGapiReady, accessToken } = useGapiContext();
 
   const [formState, setFormState] = useState<{
@@ -18,7 +20,7 @@ export default function RunReportForm() {
     dimensions: gapi.client.analyticsdata.Dimension[] | null;
     metrics: gapi.client.analyticsdata.Metric[] | null;
   }>({
-    propertyId: null,
+    propertyId: parseInt(searchParams.get("property_id") as string) || null,
     dateRanges: [
       {
         startDate: new Date(new Date().getTime() - 93 * 24 * 60 * 60 * 1000)
@@ -113,7 +115,7 @@ export default function RunReportForm() {
       setIsLoading((prev) => ({ ...prev, metadata: false }));
     }
     fetchMetadata();
-  }, [formState.propertyId]);
+  }, [isGapiReady, accessToken, formState.propertyId]);
 
   return (
     <>
