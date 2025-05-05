@@ -10,7 +10,7 @@ export default function Layout({
 }>) {
   return (
     <>
-      <div className="flex gap-4">
+      <div className="mb-3 flex gap-4">
         {["dev", "dev2", "query-explorer"].map((path) => (
           <Link key={path} href={`/${path}`} className="hover:underline">
             {path.charAt(0).toUpperCase() + path.slice(1)}
