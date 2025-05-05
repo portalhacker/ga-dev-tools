@@ -11,9 +11,11 @@ export default function Layout({
   return (
     <>
       <div className="flex gap-4">
-        <Link href="/dev">Dev</Link>
-        <Link href="/dev2">Dev2</Link>
-        <Link href="/query-explorer">Query Explorer</Link>
+        {["dev", "dev2", "query-explorer"].map((path) => (
+          <Link key={path} href={`/${path}`} className="hover:underline">
+            {path.charAt(0).toUpperCase() + path.slice(1)}
+          </Link>
+        ))}
       </div>
       <GapiContextProvider>{children}</GapiContextProvider>
     </>

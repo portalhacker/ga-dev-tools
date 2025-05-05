@@ -88,6 +88,7 @@ export async function runGA4Report({
       metrics: metrics.map((metric) => ({
         name: metric.name,
       })),
+      returnPropertyQuota: true,
     },
   });
   console.log("Response", response);

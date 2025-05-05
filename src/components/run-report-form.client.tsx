@@ -108,10 +108,11 @@ export default function RunReportForm() {
 
   return (
     <div>
-      <h2>Run Report Form</h2>
+      <h2 className="text-xl font-medium">Run Report Form</h2>
       <form className="flex flex-col gap-4">
         <select
           value={formState.propertyId ?? ""}
+          className="border-2"
           onChange={(e) => {
             const newPropertyId = parseInt(e.target.value);
             setFormState((prev) => ({ ...prev, propertyId: newPropertyId }));
@@ -135,6 +136,7 @@ export default function RunReportForm() {
         </select>
         <input
           type="date"
+          className="border-2"
           value={
             formState.dateRanges?.[0]?.startDate ??
             new Date().toISOString().split("T")[0]
@@ -156,6 +158,7 @@ export default function RunReportForm() {
         />
         <select
           multiple
+          className="h-40 border-2"
           onChange={(e) => {
             const selectedDimensions = Array.from(e.target.selectedOptions).map(
               (option) => ({
@@ -184,6 +187,7 @@ export default function RunReportForm() {
         </select>
         <select
           multiple
+          className="h-40 border-2"
           onChange={(e) => {
             const selectedMetrics = Array.from(e.target.selectedOptions).map(
               (option) => ({
@@ -212,6 +216,7 @@ export default function RunReportForm() {
         </select>
         <button
           type="button"
+          className="rounded bg-blue-500 px-4 py-2 text-white hover:cursor-pointer hover:bg-blue-600"
           onClick={async () => {
             if (!isGapiReady) {
               console.error("GAPI is not ready");
@@ -249,7 +254,9 @@ export default function RunReportForm() {
         {isLoading.runReport && <p>Loading...</p>}
         {!isLoading.runReport && (
           <code>
-            <pre>{JSON.stringify(formState, null, 2)}</pre>
+            <pre className="text-gray-500">
+              {JSON.stringify(formState, null, 2)}
+            </pre>
             <pre>{JSON.stringify(reportData, null, 2)}</pre>
           </code>
         )}
