@@ -23,6 +23,10 @@ export default function useGA4PropertyMetadata({
         console.error("GAPI is not ready");
         return;
       }
+      if (!propertyId) {
+        console.error("Property ID is not provided");
+        return;
+      }
       setIsLoadingPropertyMetadata(true);
       try {
         const metadataResponse = await listGA4ProperyMetadata({

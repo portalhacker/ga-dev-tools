@@ -1,13 +1,30 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 import useGA4AccountSummaries from "@/hooks/use-ga4-account-summaries";
 import useGA4PropertyMetadata from "@/hooks/use-ga4-property-metadata";
 import useGA4ReportData from "@/hooks/use-ga4-run-report";
 
+function updateUrl(
+  router: any,
+  pathname: string,
+  searchParams: URLSearchParams,
+  propertyId: number | null,
+) {
+  const params = new URLSearchParams(searchParams.toString());
+  if (propertyId === null) {
+    params.delete("property_id");
+  } else {
+    params.set("property_id", propertyId.toString());
+  }
+  router.replace(`${pathname}?${params.toString()}`);
+}
+
 export default function RunReportForm() {
+  const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const [formState, setFormState] = useState<{
@@ -30,6 +47,7 @@ export default function RunReportForm() {
     dimensions: null,
     metrics: null,
   });
+
   const { propertiesSummaries, isLoadingAccountSummaries } =
     useGA4AccountSummaries();
   const { propertyMetadata, isLoadingPropertyMetadata } =
@@ -43,13 +61,33 @@ export default function RunReportForm() {
     metrics: formState.metrics,
   });
 
+  if (
+    isLoadingAccountSummaries.propertiesSummaries === false &&
+    propertiesSummaries &&
+    propertiesSummaries.length > 0 &&
+    formState.propertyId === null
+  ) {
+    const newPropertyId = parseInt(
+      propertiesSummaries?.[0]?.property?.split("/")[1] as string,
+    );
+    setFormState((prev) => ({
+      ...prev,
+      propertyId: newPropertyId,
+    }));
+    updateUrl(router, pathname, searchParams, newPropertyId);
+  }
+
   return (
     <>
       <div className="flex gap-6">
         <div className="w-1/3">
           <form className="mb-4 flex flex-col gap-4">
             <select
-              value={formState.propertyId ?? ""}
+              value={
+                formState.propertyId
+                  ? formState.propertyId.toString()
+                  : propertiesSummaries?.[0]?.property?.split("/")[1] || ""
+              }
               className="border-2"
               onChange={(e) => {
                 const newPropertyId = parseInt(e.target.value);
@@ -57,13 +95,13 @@ export default function RunReportForm() {
                   ...prev,
                   propertyId: newPropertyId,
                 }));
+                updateUrl(router, pathname, searchParams, newPropertyId);
               }}
             >
               {isLoadingAccountSummaries.propertiesSummaries ? (
                 <option>Loading...</option>
               ) : (
                 <>
-                  <option value="">Select Property</option>
                   {propertiesSummaries?.map((property) => (
                     <option
                       key={property.property?.split("/")[1]}

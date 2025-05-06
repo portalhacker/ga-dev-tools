@@ -5,9 +5,11 @@ import { listGA4AccountSummaries } from "@/utils/gapi-utils";
 
 export default function useGA4AccountSummaries() {
   const { isGapiReady, accessToken } = useGapiContext();
+
   const [accountSummaries, setAccountSummaries] = useState<
     gapi.client.analyticsadmin.GoogleAnalyticsAdminV1betaAccountSummary[] | null
   >(null);
+
   const [propertiesSummaries, setPropertiesSummaries] = useState<
     | (gapi.client.analyticsadmin.GoogleAnalyticsAdminV1betaPropertySummary & {
         accountDisplayName: string;
@@ -18,6 +20,7 @@ export default function useGA4AccountSummaries() {
     accountSummaries: false,
     propertiesSummaries: false,
   });
+
   useEffect(() => {
     async function fetchAccountSummaries() {
       if (!isGapiReady) {
