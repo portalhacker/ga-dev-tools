@@ -209,9 +209,43 @@ export default function RunReportForm() {
         {isLoadingReportData ? (
           <p>Loading...</p>
         ) : (
-          <code>
-            <pre>{JSON.stringify(reportData, null, 2)}</pre>
-          </code>
+          <div className="flex flex-col gap-4">
+            <table>
+              <thead>
+                <tr>
+                  {reportData?.dimensionHeaders ? (
+                    reportData.dimensionHeaders.map((header, index) => (
+                      <th key={index}>{header.name}</th>
+                    ))
+                  ) : (
+                    <th></th>
+                  )}
+                  {reportData?.metricHeaders ? (
+                    reportData.metricHeaders.map((header, index) => (
+                      <th key={index}>{header.name}</th>
+                    ))
+                  ) : (
+                    <th></th>
+                  )}
+                </tr>
+              </thead>
+              <tbody>
+                {reportData?.rows?.map((row, rowIndex) => (
+                  <tr key={rowIndex} className="border-2">
+                    {row.dimensionValues?.map((value, valueIndex) => (
+                      <td key={valueIndex}>{value.value}</td>
+                    ))}
+                    {row.metricValues?.map((value, valueIndex) => (
+                      <td key={valueIndex}>{value.value}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <code>
+              <pre>{JSON.stringify(reportData, null, 2)}</pre>
+            </code>
+          </div>
         )}
       </div>
     </>
