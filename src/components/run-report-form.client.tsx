@@ -77,6 +77,23 @@ export default function RunReportForm() {
     updateUrl(router, pathname, searchParams, newPropertyId);
   }
 
+  const file = new Blob(
+    [
+      JSON.stringify(
+        {
+          formState,
+          reportData,
+        },
+        null,
+        2,
+      ),
+    ],
+    {
+      type: "application/json",
+    },
+  );
+  const fileUrl = URL.createObjectURL(file);
+
   return (
     <>
       <div className="flex gap-6">
@@ -210,6 +227,17 @@ export default function RunReportForm() {
           <p>Loading...</p>
         ) : (
           <div className="flex flex-col gap-4">
+            {reportData ? (
+              <a
+                href={fileUrl}
+                download={`report-${formState.propertyId}-${
+                  new Date().toISOString().split("T")[0]
+                }.json`}
+                className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"
+              >
+                Download raw JSON
+              </a>
+            ) : null}
             <table>
               <thead>
                 <tr>
