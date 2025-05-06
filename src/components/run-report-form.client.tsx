@@ -1,18 +1,14 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-import useGapiContext from "@/contexts/useGapiContext";
-import {
-  listGA4AccountSummaries,
-  listGA4ProperyMetadata,
-  runGA4Report,
-} from "@/utils/gapi-utils";
+import useGA4AccountSummaries from "@/hooks/use-ga4-account-summaries";
+import useGA4PropertyMetadata from "@/hooks/use-ga4-property-metadata";
+import useGA4ReportData from "@/hooks/use-ga4-run-report";
 
 export default function RunReportForm() {
   const searchParams = useSearchParams();
-  const { isGapiReady, accessToken } = useGapiContext();
 
   const [formState, setFormState] = useState<{
     propertyId: number | null;
@@ -34,88 +30,18 @@ export default function RunReportForm() {
     dimensions: null,
     metrics: null,
   });
-  const [options, setOptions] = useState<{
-    accountSummaries:
-      | gapi.client.analyticsadmin.GoogleAnalyticsAdminV1betaAccountSummary[]
-      | null;
-    properties:
-      | (gapi.client.analyticsadmin.GoogleAnalyticsAdminV1betaPropertySummary & {
-          accountDisplayName: string;
-        })[]
-      | null;
-    metadata: gapi.client.analyticsdata.Metadata | null;
-  }>({
-    accountSummaries: null,
-    properties: null,
-    metadata: null,
+  const { propertiesSummaries, isLoadingAccountSummaries } =
+    useGA4AccountSummaries();
+  const { propertyMetadata, isLoadingPropertyMetadata } =
+    useGA4PropertyMetadata({
+      propertyId: formState.propertyId as number,
+    });
+  const { reportData, isLoadingReportData } = useGA4ReportData({
+    propertyId: formState.propertyId as number,
+    dateRanges: formState.dateRanges,
+    dimensions: formState.dimensions,
+    metrics: formState.metrics,
   });
-  const [reportData, setReportData] =
-    useState<gapi.client.analyticsdata.RunReportResponse | null>(null);
-  const [isLoading, setIsLoading] = useState({
-    accountSummaries: false,
-    metadata: false,
-    runReport: false,
-  });
-
-  useEffect(() => {
-    async function fetchAccountSummaries() {
-      if (!isGapiReady) {
-        console.error("GAPI is not ready");
-        return;
-      }
-      setIsLoading((prev) => ({ ...prev, accountSummaries: true }));
-      const accountSummariesResponse = await listGA4AccountSummaries({
-        accessToken: accessToken as gapi.client.TokenObject,
-      });
-      console.log("Account summaries response", accountSummariesResponse);
-      const properties = accountSummariesResponse.accountSummaries
-        ?.flatMap((accountSummary) =>
-          accountSummary.propertySummaries?.map((propertySummary) => ({
-            ...propertySummary,
-            accountDisplayName: accountSummary.displayName,
-          })),
-        )
-        ?.filter(
-          (
-            property,
-          ): property is gapi.client.analyticsadmin.GoogleAnalyticsAdminV1betaPropertySummary & {
-            accountDisplayName: string;
-          } => property !== undefined,
-        );
-      console.log("Properties", properties);
-      setOptions((prev) => ({
-        ...prev,
-        properties: properties ?? null,
-      }));
-      setIsLoading((prev) => ({ ...prev, accountSummaries: false }));
-    }
-    fetchAccountSummaries();
-  }, [isGapiReady, accessToken]);
-
-  useEffect(() => {
-    async function fetchMetadata() {
-      if (!isGapiReady) {
-        console.error("GAPI is not ready");
-        return;
-      }
-      if (!formState.propertyId) {
-        console.log("Property ID is not set");
-        return;
-      }
-      setIsLoading((prev) => ({ ...prev, metadata: true }));
-      const metadataResponse = await listGA4ProperyMetadata({
-        accessToken: accessToken as gapi.client.TokenObject,
-        properyId: formState.propertyId,
-      });
-      console.log("Metadata response", metadataResponse);
-      setOptions((prev) => ({
-        ...prev,
-        metadata: metadataResponse,
-      }));
-      setIsLoading((prev) => ({ ...prev, metadata: false }));
-    }
-    fetchMetadata();
-  }, [isGapiReady, accessToken, formState.propertyId]);
 
   return (
     <>
@@ -133,12 +59,12 @@ export default function RunReportForm() {
                 }));
               }}
             >
-              {isLoading.accountSummaries ? (
+              {isLoadingAccountSummaries.propertiesSummaries ? (
                 <option>Loading...</option>
               ) : (
                 <>
                   <option value="">Select Property</option>
-                  {options.properties?.map((property) => (
+                  {propertiesSummaries?.map((property) => (
                     <option
                       key={property.property?.split("/")[1]}
                       value={property.property?.split("/")[1]}
@@ -198,11 +124,11 @@ export default function RunReportForm() {
                 }));
               }}
             >
-              {isLoading.metadata ? (
+              {isLoadingPropertyMetadata ? (
                 <option>Loading...</option>
               ) : (
                 <>
-                  {options.metadata?.dimensions?.map((dimension) => (
+                  {propertyMetadata?.dimensions?.map((dimension) => (
                     <option key={dimension.apiName} value={dimension.apiName}>
                       {dimension.uiName} ({dimension.apiName})
                     </option>
@@ -225,11 +151,11 @@ export default function RunReportForm() {
                 }));
               }}
             >
-              {isLoading.metadata ? (
+              {isLoadingPropertyMetadata ? (
                 <option>Loading...</option>
               ) : (
                 <>
-                  {options.metadata?.metrics?.map((metric) => (
+                  {propertyMetadata?.metrics?.map((metric) => (
                     <option key={metric.apiName} value={metric.apiName}>
                       {metric.uiName} ({metric.apiName})
                     </option>
@@ -237,47 +163,12 @@ export default function RunReportForm() {
                 </>
               )}
             </select>
-            <button
-              type="button"
-              className={`rounded px-4 py-2 text-white ${isLoading.runReport ? "cursor-not-allowed hover:bg-gray-600" : "bg-blue-500 hover:cursor-pointer hover:bg-blue-600"}`}
-              onClick={async () => {
-                if (!isGapiReady) {
-                  console.error("GAPI is not ready");
-                  return;
-                }
-                if (!formState.propertyId) {
-                  console.error("Property ID is not set");
-                  return;
-                }
-                if (!formState.dateRanges) {
-                  console.error("Date ranges are not set");
-                  return;
-                }
-                if (!formState.metrics) {
-                  console.error("Metrics are not set");
-                  return;
-                }
-                setIsLoading((prev) => ({ ...prev, runReport: true }));
-                const runReportResponse = await runGA4Report({
-                  accessToken: accessToken as gapi.client.TokenObject,
-                  properyId: formState.propertyId,
-                  dateRanges: formState.dateRanges,
-                  dimensions: formState.dimensions ?? [],
-                  metrics: formState.metrics,
-                });
-                console.log("Run report response", runReportResponse);
-                setReportData(runReportResponse);
-                setIsLoading((prev) => ({ ...prev, runReport: false }));
-              }}
-            >
-              {isLoading.runReport ? "Loading..." : "Run Report"}
-            </button>
           </form>
           <code>
             <pre>{JSON.stringify(formState, null, 2)}</pre>
           </code>
         </div>
-        {isLoading.runReport ? (
+        {isLoadingReportData ? (
           <p>Loading...</p>
         ) : (
           <code>

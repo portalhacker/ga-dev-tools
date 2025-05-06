@@ -8,7 +8,7 @@ type tokenProps = {
 };
 
 type GA4ProperyProps = tokenProps & {
-  properyId: number;
+  propertyId: number;
 };
 
 type GA4ReportProps = GA4ProperyProps & {
@@ -52,14 +52,14 @@ export async function listGA4Accounts({
 
 export async function listGA4ProperyMetadata({
   accessToken,
-  properyId,
+  propertyId,
 }: GA4ProperyProps): Promise<gapi.client.analyticsdata.Metadata> {
   const discoveryDocument =
     "https://analyticsdata.googleapis.com/$discovery/rest?version=v1beta";
   await initAPI({ accessToken, discoveryDocument });
   const response =
     await window.gapi.client.analyticsdata.properties.getMetadata({
-      name: `properties/${properyId}/metadata`,
+      name: `properties/${propertyId}/metadata`,
     });
   console.log("Response", response);
   return response.result;
@@ -67,7 +67,7 @@ export async function listGA4ProperyMetadata({
 
 export async function runGA4Report({
   accessToken,
-  properyId,
+  propertyId,
   dateRanges,
   dimensions,
   metrics,
@@ -76,7 +76,7 @@ export async function runGA4Report({
     "https://analyticsdata.googleapis.com/$discovery/rest?version=v1beta";
   await initAPI({ accessToken, discoveryDocument });
   const response = await window.gapi.client.analyticsdata.properties.runReport({
-    property: `properties/${properyId}`,
+    property: `properties/${propertyId}`,
     resource: {
       dateRanges: dateRanges.map((dateRange) => ({
         startDate: dateRange.startDate,
