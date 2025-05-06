@@ -46,7 +46,7 @@ export default function RunReportForm() {
   return (
     <>
       <div className="flex gap-6">
-        <div className="w-[50%]">
+        <div className="w-1/3">
           <form className="mb-4 flex flex-col gap-4">
             <select
               value={formState.propertyId ?? ""}
