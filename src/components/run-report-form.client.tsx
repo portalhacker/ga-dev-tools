@@ -132,38 +132,40 @@ export default function RunReportForm() {
                 </>
               )}
             </select>
-            <input
-              type="date"
-              className="border-2"
-              value={formState.dateRanges?.[0]?.startDate}
-              onChange={(e) => {
-                setFormState((prev) => ({
-                  ...prev,
-                  dateRanges: [
-                    {
-                      startDate: e.target.value,
-                      endDate: prev.dateRanges?.[0]?.endDate,
-                    },
-                  ],
-                }));
-              }}
-            />
-            <input
-              type="date"
-              className="border-2"
-              value={formState.dateRanges?.[0]?.endDate}
-              onChange={(e) => {
-                setFormState((prev) => ({
-                  ...prev,
-                  dateRanges: [
-                    {
-                      startDate: prev.dateRanges?.[0]?.startDate,
-                      endDate: e.target.value,
-                    },
-                  ],
-                }));
-              }}
-            />
+            <div className="flex gap-2">
+              <input
+                type="date"
+                className="border-2"
+                value={formState.dateRanges?.[0]?.startDate}
+                onChange={(e) => {
+                  setFormState((prev) => ({
+                    ...prev,
+                    dateRanges: [
+                      {
+                        startDate: e.target.value,
+                        endDate: prev.dateRanges?.[0]?.endDate,
+                      },
+                    ],
+                  }));
+                }}
+              />
+              <input
+                type="date"
+                className="border-2"
+                value={formState.dateRanges?.[0]?.endDate}
+                onChange={(e) => {
+                  setFormState((prev) => ({
+                    ...prev,
+                    dateRanges: [
+                      {
+                        startDate: prev.dateRanges?.[0]?.startDate,
+                        endDate: e.target.value,
+                      },
+                    ],
+                  }));
+                }}
+              />
+            </div>
             <select
               multiple
               className="h-40 border-2"
