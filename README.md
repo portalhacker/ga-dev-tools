@@ -12,6 +12,8 @@
 - [ ] Migrate to a [JSON viewer](https://www.jqueryscript.net/blog/best-json-viewer.html)
 - [ ] Add basic validation
 - [ ] Add validation with checkCompatibility
+- [ ] Add loading spinners
+- [ ] Add consent management
 - [ ] Highlight token usage
 - [ ] Force re-auth when expired
 - [ ] Add code equivalent [Acernity code block](https://ui.aceternity.com/components/code-block)
