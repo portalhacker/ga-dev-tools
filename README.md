@@ -1,21 +1,26 @@
 ## To-do
 
-- [ ] Add missing fields to form
 - [ ] Paginate through accounts
 - [ ] Paginate through results
-- [ ] Save selected fields to local storage
 - [ ] Add a CSV download
-- [ ] Add a JSONL download
-- [ ] Add a Parquet download with [Hyperparquet](https://github.com/hyparam/hyparquet?tab=readme-ov-file#quick-start)
+- [ ] Highlight token usage
+- [ ] Force re-auth when expired
 - [ ] Migrate to Shadcn form with search selectors
 - [ ] Migrate to Shadcn table
+- [ ] Add loading spinners
+- [ ] Buy domain
+- [ ] Deploy to Vercel (while keeping static site compatibility)
+- [ ] Add branding
+- [ ] Add GitHub link
+- [ ] Add consent management
+- [ ] **Marketing on LinkedIn**
 - [ ] Migrate to a [JSON viewer](https://www.jqueryscript.net/blog/best-json-viewer.html)
 - [ ] Add basic validation
 - [ ] Add validation with checkCompatibility
-- [ ] Add loading spinners
-- [ ] Add consent management
-- [ ] Highlight token usage
-- [ ] Force re-auth when expired
+- [ ] Add missing fields to form
+- [ ] Add a JSONL download
+- [ ] Save selected fields to local storage
+- [ ] Add a Parquet download with [Hyperparquet](https://github.com/hyparam/hyparquet?tab=readme-ov-file#quick-start)
 - [ ] Add code equivalent [Acernity code block](https://ui.aceternity.com/components/code-block)
 - [ ] Add pivot report
 - [ ] Add realtime report
