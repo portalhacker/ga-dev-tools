@@ -15,16 +15,16 @@ enum gapiUtilsFunctionName {
 export default function GapiCaller() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const properyIdParam = Number(searchParams.get("property_id")) || null;
+  const propertyIdParam = Number(searchParams.get("property_id")) || null;
   const { isGapiReady, client, accessToken } = useGapiContext();
   const [functionName, setFunctionName] = useState<gapiUtilsFunctionName>(
     gapiUtilsFunctionName.listGA4AccountSummaries,
   );
-  const [properyId, setProperyId] = useState<number>(
-    properyIdParam || 456086743,
+  const [propertyId, setPropertyId] = useState<number>(
+    propertyIdParam || 456086743,
   );
   const [response, setResponse] = useState<
-    | gapi.client.analyticsadmin.GoogleAnalyticsAdminV1betaListAccountSummariesResponse
+    | gapi.client.analyticsadmin.GoogleAnalyticsAdminV1betaAccountSummary[]
     | gapi.client.analyticsadmin.GoogleAnalyticsAdminV1betaListAccountsResponse
     | gapi.client.analyticsdata.Metadata
     | gapi.client.analyticsdata.RunReportResponse
@@ -66,7 +66,7 @@ export default function GapiCaller() {
   }
 
   function handlePropertyIdChange(newPropertyId: number) {
-    setProperyId(newPropertyId);
+    setPropertyId(newPropertyId);
     updateSearchParams(newPropertyId);
   }
 
@@ -100,7 +100,7 @@ export default function GapiCaller() {
       setIsLoading(true);
       const response = await functionToCall({
         accessToken,
-        properyId,
+        propertyId,
       });
       console.log("Response", response);
       setResponse(response);
@@ -131,7 +131,7 @@ export default function GapiCaller() {
         ))}
       </select>
       <select
-        value={properyId}
+        value={propertyId}
         onChange={(e) => handlePropertyIdChange(Number(e.target.value))}
         className="rounded border px-4 py-2 hover:cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800"
       >
