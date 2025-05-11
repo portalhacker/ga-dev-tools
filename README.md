@@ -1,7 +1,7 @@
 ## To-do
 
 - [x] Paginate through accounts
-- [ ] Sort accounts by name
+- [x] Sort accounts by name
 - [ ] Paginate through results
 - [ ] Add a CSV download
 - [ ] Highlight token usage

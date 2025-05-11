@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 
 import useGapiContext from "@/contexts/useGapiContext";
+import { sortArrayByProperties } from "@/lib/utils";
 import { listGA4AccountSummaries } from "@/utils/gapi-utils";
+
+type customGoogleAnalyticsPropertySummary =
+  gapi.client.analyticsadmin.GoogleAnalyticsAdminV1betaPropertySummary & {
+    accountDisplayName: string;
+  };
 
 export default function useGA4AccountSummaries() {
   const { isGapiReady, accessToken } = useGapiContext();
@@ -34,8 +40,10 @@ export default function useGA4AccountSummaries() {
       const accountSummaries = await listGA4AccountSummaries({
         accessToken: accessToken as gapi.client.TokenObject,
       });
-      console.log("Account summaries response", accountSummaries);
-      const properties = accountSummaries
+      const sortedAccountSummaries: gapi.client.analyticsadmin.GoogleAnalyticsAdminV1betaAccountSummary[] =
+        sortArrayByProperties(accountSummaries, ["displayName"]);
+      // console.log("Account summaries response", sortedAccountSummaries);
+      const properties = sortedAccountSummaries
         ?.flatMap((accountSummary) =>
           accountSummary.propertySummaries?.map((propertySummary) => ({
             ...propertySummary,
@@ -43,15 +51,16 @@ export default function useGA4AccountSummaries() {
           })),
         )
         ?.filter(
-          (
-            property,
-          ): property is gapi.client.analyticsadmin.GoogleAnalyticsAdminV1betaPropertySummary & {
-            accountDisplayName: string;
-          } => property !== undefined,
+          (property): property is customGoogleAnalyticsPropertySummary =>
+            property !== undefined,
         );
-      console.log("Properties", properties);
-      setAccountSummaries(accountSummaries ?? null);
-      setPropertiesSummaries(properties ?? null);
+      const sortedProperties = sortArrayByProperties(properties, [
+        "accountDisplayName",
+        "displayName",
+      ]) as customGoogleAnalyticsPropertySummary[];
+      // console.log("Properties", properties);
+      setAccountSummaries(sortedAccountSummaries ?? null);
+      setPropertiesSummaries(sortedProperties ?? null);
       setIsLoadingAccountSummaries({
         accountSummaries: false,
         propertiesSummaries: false,
