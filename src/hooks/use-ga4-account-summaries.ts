@@ -31,11 +31,11 @@ export default function useGA4AccountSummaries() {
         accountSummaries: true,
         propertiesSummaries: true,
       }));
-      const accountSummariesResponse = await listGA4AccountSummaries({
+      const accountSummaries = await listGA4AccountSummaries({
         accessToken: accessToken as gapi.client.TokenObject,
       });
-      console.log("Account summaries response", accountSummariesResponse);
-      const properties = accountSummariesResponse.accountSummaries
+      console.log("Account summaries response", accountSummaries);
+      const properties = accountSummaries
         ?.flatMap((accountSummary) =>
           accountSummary.propertySummaries?.map((propertySummary) => ({
             ...propertySummary,
@@ -50,7 +50,7 @@ export default function useGA4AccountSummaries() {
           } => property !== undefined,
         );
       console.log("Properties", properties);
-      setAccountSummaries(accountSummariesResponse.accountSummaries ?? null);
+      setAccountSummaries(accountSummaries ?? null);
       setPropertiesSummaries(properties ?? null);
       setIsLoadingAccountSummaries({
         accountSummaries: false,

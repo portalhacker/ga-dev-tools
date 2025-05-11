@@ -29,14 +29,33 @@ async function initAPI({ accessToken, discoveryDocument }: initAPIProps) {
 
 export async function listGA4AccountSummaries({
   accessToken,
-}: tokenProps): Promise<gapi.client.analyticsadmin.GoogleAnalyticsAdminV1betaListAccountSummariesResponse> {
+}: tokenProps): Promise<
+  gapi.client.analyticsadmin.GoogleAnalyticsAdminV1betaAccountSummary[]
+> {
   const discoveryDocument =
     "https://analyticsadmin.googleapis.com/$discovery/rest?version=v1beta";
   await initAPI({ accessToken, discoveryDocument });
-  const response =
-    await window.gapi.client.analyticsadmin.accountSummaries.list();
-  console.log("Response", response);
-  return response.result;
+  let nextPageToken: string | undefined;
+  let accountSummaries: gapi.client.analyticsadmin.GoogleAnalyticsAdminV1betaAccountSummary[] =
+    [];
+  do {
+    const response =
+      await window.gapi.client.analyticsadmin.accountSummaries.list({
+        pageSize: 200,
+        pageToken: nextPageToken,
+      });
+    if (response.status !== 200) {
+      throw new Error(
+        `Error fetching account summaries: ${response.statusText}`,
+      );
+    }
+    const data = response.result;
+    if (data.accountSummaries) {
+      accountSummaries = accountSummaries.concat(data.accountSummaries);
+    }
+    nextPageToken = data.nextPageToken;
+  } while (nextPageToken);
+  return accountSummaries;
 }
 
 export async function listGA4Accounts({
@@ -46,7 +65,6 @@ export async function listGA4Accounts({
     "https://analyticsadmin.googleapis.com/$discovery/rest?version=v1beta";
   await initAPI({ accessToken, discoveryDocument });
   const response = await window.gapi.client.analyticsadmin.accounts.list();
-  console.log("Response", response);
   return response.result;
 }
 
@@ -61,7 +79,6 @@ export async function listGA4ProperyMetadata({
     await window.gapi.client.analyticsdata.properties.getMetadata({
       name: `properties/${propertyId}/metadata`,
     });
-  console.log("Response", response);
   return response.result;
 }
 

@@ -42,11 +42,11 @@ export default function GapiCaller() {
         console.error("GAPI is not ready");
         return;
       }
-      const accountSummariesResponse = await gapiUtils.listGA4AccountSummaries({
+      const accountSummaries = await gapiUtils.listGA4AccountSummaries({
         accessToken: accessToken as gapi.client.TokenObject,
       });
-      console.log("Account summaries response", accountSummariesResponse);
-      setAccountSummaries(accountSummariesResponse.accountSummaries || null);
+      console.log("Account summaries response", accountSummaries);
+      setAccountSummaries(accountSummaries || null);
     };
     fetchAccountSummaries();
   }, [isGapiReady, accessToken]);
@@ -58,7 +58,6 @@ export default function GapiCaller() {
       })),
     )
     .filter((property) => property !== undefined);
-  console.log("Properties", properties);
 
   function updateSearchParams(newPropertyId: number) {
     const params = new URLSearchParams(searchParams.toString());
