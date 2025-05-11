@@ -153,6 +153,9 @@ export default function GapiCaller() {
           </>
         )}
       </select>
+      <p>
+        {accountSummaries?.length} accounts, {properties?.length} properties
+      </p>
       <button
         onClick={executeGapi}
         disabled={!accessToken || isLoading}
