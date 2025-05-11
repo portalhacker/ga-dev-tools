@@ -92,22 +92,58 @@ export async function runGA4Report({
   const discoveryDocument =
     "https://analyticsdata.googleapis.com/$discovery/rest?version=v1beta";
   await initAPI({ accessToken, discoveryDocument });
-  const response = await window.gapi.client.analyticsdata.properties.runReport({
-    property: `properties/${propertyId}`,
-    resource: {
-      dateRanges: dateRanges.map((dateRange) => ({
-        startDate: dateRange.startDate,
-        endDate: dateRange.endDate,
-      })),
-      dimensions: dimensions.map((dimension) => ({
-        name: dimension.name,
-      })),
-      metrics: metrics.map((metric) => ({
-        name: metric.name,
-      })),
-      returnPropertyQuota: true,
-    },
-  });
-  console.log("Response", response);
-  return response.result;
+  let datas: gapi.client.analyticsdata.RunReportResponse = {
+    dimensionHeaders: [],
+    metricHeaders: [],
+    rows: [],
+    rowCount: 0,
+    metadata: undefined,
+    propertyQuota: undefined,
+    kind: undefined,
+  };
+  let maxLimit = 250000;
+  let limit = maxLimit;
+  let offset = 0;
+
+  do {
+    const response =
+      await window.gapi.client.analyticsdata.properties.runReport({
+        property: `properties/${propertyId}`,
+        resource: {
+          dateRanges: dateRanges.map((dateRange) => ({
+            startDate: dateRange.startDate,
+            endDate: dateRange.endDate,
+          })),
+          dimensions: dimensions.map((dimension) => ({
+            name: dimension.name,
+          })),
+          metrics: metrics.map((metric) => ({
+            name: metric.name,
+          })),
+          returnPropertyQuota: true,
+          limit: String(limit),
+          offset: String(offset),
+        },
+      });
+    if (response.status !== 200) {
+      throw new Error(`Error fetching report data: ${response.statusText}`);
+    }
+    const data = response.result;
+    if (data.rows) {
+      datas = {
+        ...data,
+        rows: data.rows.map((row) => ({
+          dimensionValues: row.dimensionValues,
+          metricValues: row.metricValues,
+        })),
+      };
+    }
+    if (data.rowCount && data.rowCount > limit + offset) {
+      offset += limit;
+      limit = Math.min(data.rowCount - offset, maxLimit);
+    } else {
+      offset = data.rowCount || 0;
+    }
+  } while (offset < (datas?.rowCount || 0));
+  return datas;
 }

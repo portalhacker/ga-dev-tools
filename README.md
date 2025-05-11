@@ -2,7 +2,8 @@
 
 - [x] Paginate through accounts
 - [x] Sort accounts by name
-- [ ] Paginate through results
+- [x] Paginate through results
+- [ ] Prevent freeze on very large data
 - [ ] Add a CSV download
 - [ ] Highlight token usage
 - [ ] Force re-auth when expired
